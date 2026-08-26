@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ aluno.nome_completo }} — Gestão Escolar{% endblock %}
+{% block content %}
+<a href="{% url 'alunos:lista' %}">&larr; Voltar</a>
+<h1 class="h3 mt-2 mb-4">{{ aluno.nome_completo }}</h1>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h6">Dados do aluno</h2>
+                <dl class="row mb-0">
+                    <dt class="col-5">Matrícula</dt><dd class="col-7">{{ aluno.matricula_numero }}</dd>
+                    <dt class="col-5">Nascimento</dt><dd class="col-7">{{ aluno.data_nascimento }}</dd>
+                    <dt class="col-5">CPF</dt><dd class="col-7">{{ aluno.cpf|default:"—" }}</dd>
+                    <dt class="col-5">Matriculado desde</dt><dd class="col-7">{{ aluno.data_matricula_inicial }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h6">Matrículas</h2>
+                <ul class="list-unstyled mb-0">
+                    {% for matricula in aluno.matriculas.all %}
+                    <li>{{ matricula.ano_letivo }} — {{ matricula.turma }} <span class="badge text-bg-secondary">{{ matricula.get_status_display }}</span></li>
+                    {% empty %}
+                    <li class="text-muted">Nenhuma matrícula.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h6">Responsáveis</h2>
+                <ul class="list-unstyled mb-0">
+                    {% for vinculo in aluno.responsaveis.all %}
+                    <li>
+                        {{ vinculo.responsavel.nome_completo }} ({{ vinculo.get_parentesco_display }}) —
+                        {{ vinculo.responsavel.telefone }}
+                        {% if vinculo.responsavel_financeiro %}<span class="badge text-bg-info">financeiro</span>{% endif %}
+                        {% if vinculo.responsavel_pedagogico %}<span class="badge text-bg-info">comunicados</span>{% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="text-muted">Nenhum responsável cadastrado.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "alunos/matricula_wizard_base.html" %}
+{% load form_tags %}
+{% block step_fields %}
+<h2 class="h5 mb-3">Turma</h2>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label">Turma</label>
+        {{ wizard.form.turma|add_class:"form-select" }}
+        <div class="text-danger small">{{ wizard.form.turma.errors }}</div>
+    </div>
+</div>
+{% endblock %}

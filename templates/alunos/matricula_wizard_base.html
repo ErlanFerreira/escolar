@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Matricular aluno — Gestão Escolar{% endblock %}
+{% block content %}
+<h1 class="h3 mb-2">Matricular aluno</h1>
+<p class="text-muted">Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</p>
+<div class="progress mb-4" style="height: 6px;">
+    <div class="progress-bar" role="progressbar" style="width: {% widthratio wizard.steps.step1 wizard.steps.count 100 %}%"></div>
+</div>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% if wizard.form.non_field_errors %}
+    <div class="alert alert-danger">{{ wizard.form.non_field_errors }}</div>
+    {% endif %}
+    {% block step_fields %}{% endblock %}
+    <div class="d-flex justify-content-between mt-4">
+        {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}" class="btn btn-outline-secondary">Voltar</button>
+        {% else %}
+        <span></span>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">
+            {% if wizard.steps.current == wizard.steps.last %}Concluir matrícula{% else %}Próximo{% endif %}
+        </button>
+    </div>
+</form>
+{% endblock %}

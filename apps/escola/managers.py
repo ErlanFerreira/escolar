@@ -14,5 +14,9 @@ class TurmaQuerySet(RoleScopedQuerySet):
                 "turma_id", flat=True
             )
             return self.filter(pk__in=turma_ids).distinct()
-        # RESPONSAVEL e ALUNO ganham escopo próprio a partir do app alunos (M4).
+        if user.role in (Role.RESPONSAVEL, Role.ALUNO):
+            from apps.alunos.models import Matricula
+
+            turma_ids = Matricula.objects.for_user(user).values_list("turma_id", flat=True)
+            return self.filter(pk__in=turma_ids).distinct()
         return self.none()

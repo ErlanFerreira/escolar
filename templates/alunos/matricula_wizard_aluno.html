@@ -1,0 +1,34 @@
+{% extends "alunos/matricula_wizard_base.html" %}
+{% load form_tags %}
+{% block step_fields %}
+<h2 class="h5 mb-3">Dados do aluno</h2>
+<div class="row g-3">
+    <div class="col-md-8">
+        <label class="form-label">Nome completo</label>
+        {{ wizard.form.nome_completo|add_class:"form-control" }}
+        <div class="text-danger small">{{ wizard.form.nome_completo.errors }}</div>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Data de nascimento</label>
+        {{ wizard.form.data_nascimento|add_class:"form-control" }}
+        <div class="text-danger small">{{ wizard.form.data_nascimento.errors }}</div>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">CPF</label>
+        {{ wizard.form.cpf|add_class:"form-control" }}
+        <div class="text-danger small">{{ wizard.form.cpf.errors }}</div>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">RG</label>
+        {{ wizard.form.rg|add_class:"form-control" }}
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Sexo</label>
+        {{ wizard.form.sexo|add_class:"form-select" }}
+    </div>
+    <div class="col-12">
+        <label class="form-label">Observações (necessidades especiais, alergias, etc.)</label>
+        {{ wizard.form.observacoes|add_class:"form-control" }}
+    </div>
+</div>
+{% endblock %}

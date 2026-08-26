@@ -1,0 +1,68 @@
+{% extends "alunos/matricula_wizard_base.html" %}
+{% load form_tags %}
+{% block step_fields %}
+<h2 class="h5 mb-3">Responsáveis</h2>
+<p class="text-muted small">Informe pelo menos um responsável. O segundo formulário pode ficar em branco.</p>
+{{ wizard.form.management_form }}
+{% if wizard.form.non_form_errors %}
+<div class="alert alert-danger">{{ wizard.form.non_form_errors }}</div>
+{% endif %}
+{% for form in wizard.form %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h3 class="h6">Responsável {{ forloop.counter }}</h3>
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nome completo</label>
+                {{ form.nome_completo|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">CPF</label>
+                {{ form.cpf|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Parentesco</label>
+                {{ form.parentesco|add_class:"form-select" }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Telefone</label>
+                {{ form.telefone|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Telefone secundário</label>
+                {{ form.telefone_secundario|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">E-mail</label>
+                {{ form.email|add_class:"form-control" }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Profissão</label>
+                {{ form.profissao|add_class:"form-control" }}
+            </div>
+            <div class="col-12">
+                <label class="form-label">Endereço</label>
+                {{ form.endereco|add_class:"form-control" }}
+            </div>
+            <div class="col-12 d-flex gap-4 mt-2">
+                <div class="form-check">
+                    {{ form.responsavel_financeiro|add_class:"form-check-input" }}
+                    <label class="form-check-label">Responsável financeiro</label>
+                </div>
+                <div class="form-check">
+                    {{ form.responsavel_pedagogico|add_class:"form-check-input" }}
+                    <label class="form-check-label">Recebe comunicados</label>
+                </div>
+                <div class="form-check">
+                    {{ form.reside_com_aluno|add_class:"form-check-input" }}
+                    <label class="form-check-label">Reside com o aluno</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
