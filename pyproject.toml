@@ -1,0 +1,10 @@
+[tool.ruff]
+line-length = 110
+extend-exclude = ["venv", "**/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "RUF"]
+ignore = [
+    "RUF012", # Django ModelAdmin/model class attrs (list_display, choices, ...) are idiomatically mutable
+    "F405",   # settings/dev.py and settings/prod.py intentionally star-import settings/base.py
+]
