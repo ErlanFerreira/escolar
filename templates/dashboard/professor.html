@@ -2,5 +2,19 @@
 {% block title %}Painel do Professor{% endblock %}
 {% block content %}
 <h1 class="h3 mb-4">Painel do Professor</h1>
-<p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}. Suas turmas e ferramentas de lançamento de notas e chamada aparecerão aqui.</p>
+<p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}.</p>
+
+<h2 class="h5 mb-3">Minhas turmas</h2>
+{% if minhas_turmas %}
+<div class="list-group">
+    {% for turma in minhas_turmas %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ turma }}</span>
+        <span class="badge text-bg-secondary">{{ turma.get_turno_display }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Nenhuma turma atribuída ainda.</p>
+{% endif %}
 {% endblock %}

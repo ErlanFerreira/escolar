@@ -1,7 +1,15 @@
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
 
+from apps.professores.models import ProfessorDisciplinaTurma
+
 from .models import AnoLetivo, Disciplina, Escola, MatrizCurricular, Serie, Turma
+
+
+class ProfessorDisciplinaTurmaInline(admin.TabularInline):
+    model = ProfessorDisciplinaTurma
+    extra = 1
+    autocomplete_fields = ["professor", "disciplina"]
 
 
 @admin.register(Escola)
@@ -27,6 +35,7 @@ class TurmaAdmin(admin.ModelAdmin):
     list_display = ["__str__", "ano_letivo", "serie", "turno", "capacidade_maxima"]
     list_filter = ["ano_letivo", "serie", "turno"]
     search_fields = ["nome"]
+    inlines = [ProfessorDisciplinaTurmaInline]
 
 
 @admin.register(Disciplina)

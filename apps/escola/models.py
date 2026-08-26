@@ -4,6 +4,8 @@ from solo.models import SingletonModel
 
 from apps.core.models import TimestampedModel
 
+from .managers import TurmaQuerySet
+
 
 class Escola(SingletonModel):
     """Dados institucionais únicos da escola (v1 = uma única escola).
@@ -93,6 +95,8 @@ class Turma(TimestampedModel):
     turno = models.CharField("turno", max_length=20, choices=Turno.choices)
     capacidade_maxima = models.PositiveSmallIntegerField("capacidade máxima", default=30)
     sala = models.CharField("sala", max_length=50, blank=True)
+
+    objects = TurmaQuerySet.as_manager()
 
     class Meta:
         verbose_name = "turma"
