@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load form_tags %}
+{% block title %}Nova avaliação — {{ turma }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Nova avaliação — {{ turma }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Título</label>
+            {{ form.titulo|add_class:"form-control" }}
+            <div class="text-danger small">{{ form.titulo.errors }}</div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Data</label>
+            {{ form.data|add_class:"form-control" }}
+            <div class="text-danger small">{{ form.data.errors }}</div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Período letivo</label>
+            {{ form.periodo|add_class:"form-select" }}
+            <div class="text-danger small">{{ form.periodo.errors }}</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Tipo</label>
+            {{ form.tipo|add_class:"form-select" }}
+            <div class="text-danger small">{{ form.tipo.errors }}</div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Valor máximo</label>
+            {{ form.valor_maximo|add_class:"form-control" }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Peso</label>
+            {{ form.peso|add_class:"form-control" }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-4">Criar avaliação</button>
+</form>
+{% endblock %}

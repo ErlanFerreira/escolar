@@ -7,6 +7,7 @@ urlpatterns = [
     path("", include("apps.accounts.urls")),
     path("", include("apps.dashboard.urls")),
     path("", include("apps.alunos.urls")),
+    path("", include("apps.notas.urls")),
 ]
 
 if settings.DEBUG:

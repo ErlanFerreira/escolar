@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 
 from apps.accounts.models import CustomUser
+from apps.alunos.models import Aluno
 from apps.core.mixins import RoleRequiredMixin
 from apps.escola.models import Turma
 
@@ -25,6 +26,11 @@ class ProfessorDashboardView(RoleRequiredMixin, TemplateView):
 class ResponsavelDashboardView(RoleRequiredMixin, TemplateView):
     template_name = "dashboard/responsavel.html"
     allowed_roles = (CustomUser.Role.RESPONSAVEL,)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["meus_filhos"] = Aluno.objects.for_user(self.request.user)
+        return context
 
 
 class AlunoDashboardView(RoleRequiredMixin, TemplateView):

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load form_tags %}
+{% block title %}Lançar notas — {{ avaliacao.titulo }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-1">{{ avaliacao.titulo }}</h1>
+<p class="text-muted">{{ avaliacao.turma }} — {{ avaliacao.disciplina }} — valor máximo {{ avaliacao.valor_maximo }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}
+    <div class="alert alert-danger">{{ formset.non_form_errors }}</div>
+    {% endif %}
+    <table class="table bg-white align-middle">
+        <thead>
+            <tr><th>Aluno</th><th style="width: 140px;">Nota</th><th>Observação</th></tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+            <tr>
+                <td>
+                    {{ form.id }}
+                    {{ form.instance.aluno.nome_completo }}
+                </td>
+                <td>{{ form.valor|add_class:"form-control" }}</td>
+                <td>{{ form.observacao|add_class:"form-control" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Salvar notas</button>
+</form>
+{% endblock %}

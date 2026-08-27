@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Boletim{% if aluno %} — {{ aluno.nome_completo }}{% endif %}{% endblock %}
+{% block content %}
+{% if aluno %}
+<h1 class="h3 mb-4">Boletim — {{ aluno.nome_completo }}</h1>
+{% if boletim %}
+{% for item in boletim %}
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">{{ item.disciplina }}</h2>
+            <span class="badge text-bg-primary">Média: {{ item.media|floatformat:1 }}</span>
+        </div>
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Avaliação</th><th>Período</th><th>Nota</th></tr></thead>
+            <tbody>
+                {% for nota in item.notas %}
+                <tr>
+                    <td>{{ nota.avaliacao.titulo }}</td>
+                    <td>{{ nota.avaliacao.periodo }}</td>
+                    <td>{{ nota.valor }} / {{ nota.avaliacao.valor_maximo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p class="text-muted">Nenhuma nota lançada ainda.</p>
+{% endif %}
+{% else %}
+<p class="text-muted">Nenhum cadastro de aluno vinculado a esta conta ainda.</p>
+{% endif %}
+{% endblock %}

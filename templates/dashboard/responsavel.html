@@ -2,5 +2,19 @@
 {% block title %}Painel do Responsável{% endblock %}
 {% block content %}
 <h1 class="h3 mb-4">Painel do Responsável</h1>
-<p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}. Notas, frequência e financeiro dos seus filhos aparecerão aqui.</p>
+<p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}.</p>
+
+<h2 class="h5 mb-3">Meus filhos</h2>
+{% if meus_filhos %}
+<div class="list-group">
+    {% for aluno in meus_filhos %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ aluno.nome_completo }}</span>
+        <a href="{% url 'notas:boletim_filho' aluno.pk %}" class="btn btn-sm btn-outline-primary">Boletim</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Nenhum aluno vinculado ainda.</p>
+{% endif %}
 {% endblock %}
