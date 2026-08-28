@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Financeiro — Gestão Escolar{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Financeiro</h1>
+    <div>
+        <a href="{% url 'financeiro:gerar' %}" class="btn btn-primary">Gerar cobranças</a>
+        <a href="{% url 'financeiro:inadimplencia' %}" class="btn btn-outline-danger">Inadimplência</a>
+    </div>
+</div>
+{% if cobrancas %}
+<table class="table table-hover bg-white">
+    <thead>
+        <tr><th>Aluno</th><th>Competência</th><th>Vencimento</th><th>Valor</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for cobranca in cobrancas %}
+        <tr>
+            <td>{{ cobranca.aluno }}</td>
+            <td>{{ cobranca.competencia }}</td>
+            <td>{{ cobranca.data_vencimento }}</td>
+            <td>R$ {{ cobranca.valor_final }}</td>
+            <td>
+                <span class="badge {% if cobranca.status_atual == 'PAGO' %}text-bg-success{% elif cobranca.status_atual == 'ATRASADO' %}text-bg-danger{% else %}text-bg-secondary{% endif %}">
+                    {{ cobranca.get_status_atual_display }}
+                </span>
+            </td>
+            <td>
+                {% if cobranca.status_atual != 'PAGO' and cobranca.status_atual != 'CANCELADO' and cobranca.status_atual != 'ISENTO' %}
+                <a href="{% url 'financeiro:pagar' cobranca.pk %}">Registrar pagamento</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% if is_paginated %}
+<nav>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>{% endif %}
+        <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a></li>{% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% else %}
+<p class="text-muted">Nenhuma cobrança gerada ainda.</p>
+{% endif %}
+{% endblock %}

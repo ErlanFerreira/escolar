@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Financeiro — Gestão Escolar{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Financeiro</h1>
+{% if cobrancas %}
+<table class="table table-hover bg-white">
+    <thead>
+        <tr><th>Aluno</th><th>Competência</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+        {% for cobranca in cobrancas %}
+        <tr>
+            <td>{{ cobranca.aluno }}</td>
+            <td>{{ cobranca.competencia }}</td>
+            <td>{{ cobranca.data_vencimento }}</td>
+            <td>R$ {{ cobranca.valor_final }}</td>
+            <td>
+                <span class="badge {% if cobranca.status_atual == 'PAGO' %}text-bg-success{% elif cobranca.status_atual == 'ATRASADO' %}text-bg-danger{% else %}text-bg-secondary{% endif %}">
+                    {{ cobranca.get_status_atual_display }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">Nenhuma cobrança registrada.</p>
+{% endif %}
+{% endblock %}

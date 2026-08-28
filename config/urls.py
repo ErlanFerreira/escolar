@@ -9,6 +9,7 @@ urlpatterns = [
     path("", include("apps.alunos.urls")),
     path("", include("apps.notas.urls")),
     path("", include("apps.frequencia.urls")),
+    path("", include("apps.financeiro.urls")),
 ]
 
 if settings.DEBUG:

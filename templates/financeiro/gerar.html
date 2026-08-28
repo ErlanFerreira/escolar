@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load form_tags %}
+{% block title %}Gerar cobranças — Gestão Escolar{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Gerar cobranças em lote</h1>
+<p class="text-muted">Gera uma cobrança por parcela do plano para cada aluno com matrícula ativa no ano letivo do plano. Cobranças já existentes (mesmo aluno + plano + competência) não são duplicadas.</p>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3" style="max-width: 400px;">
+        <label class="form-label">Plano de pagamento</label>
+        {{ form.plano|add_class:"form-select" }}
+        <div class="text-danger small">{{ form.plano.errors }}</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Gerar cobranças</button>
+</form>
+{% endblock %}
