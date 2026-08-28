@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Frequência{% if aluno %} — {{ aluno.nome_completo }}{% endif %}{% endblock %}
+{% block content %}
+{% if aluno %}
+<h1 class="h3 mb-4">Frequência — {{ aluno.nome_completo }}</h1>
+{% if relatorio %}
+{% for item in relatorio %}
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">{{ item.disciplina }}</h2>
+            <span class="badge {% if item.percentual < 75 %}text-bg-danger{% else %}text-bg-success{% endif %}">
+                {{ item.percentual|floatformat:1 }}% de presença
+            </span>
+        </div>
+        <p class="text-muted small mb-2">{{ item.presentes }} presença(s) em {{ item.total }} aula(s)</p>
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Data</th><th>Status</th><th>Observação</th></tr></thead>
+            <tbody>
+                {% for presenca in item.presencas %}
+                <tr>
+                    <td>{{ presenca.aula.data }}</td>
+                    <td>{{ presenca.get_status_display }}</td>
+                    <td>{{ presenca.observacao }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p class="text-muted">Nenhuma chamada registrada ainda.</p>
+{% endif %}
+{% else %}
+<p class="text-muted">Nenhum cadastro de aluno vinculado a esta conta ainda.</p>
+{% endif %}
+{% endblock %}

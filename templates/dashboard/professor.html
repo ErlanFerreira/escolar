@@ -10,7 +10,10 @@
     {% for turma in minhas_turmas %}
     <div class="list-group-item d-flex justify-content-between align-items-center">
         <span>{{ turma }} <span class="badge text-bg-secondary">{{ turma.get_turno_display }}</span></span>
-        <a href="{% url 'notas:turma' turma.pk %}" class="btn btn-sm btn-outline-primary">Notas</a>
+        <span>
+            <a href="{% url 'notas:turma' turma.pk %}" class="btn btn-sm btn-outline-primary">Notas</a>
+            <a href="{% url 'frequencia:turma' turma.pk %}" class="btn btn-sm btn-outline-primary">Chamada</a>
+        </span>
     </div>
     {% endfor %}
 </div>

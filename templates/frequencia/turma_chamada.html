@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Frequência — {{ turma }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Frequência — {{ turma }}</h1>
+
+{% if atribuicoes %}
+<div class="list-group">
+    {% for atribuicao in atribuicoes %}
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ atribuicao.disciplina }}</span>
+        <a href="{% url 'frequencia:chamada' turma.pk atribuicao.disciplina.pk %}" class="btn btn-sm btn-primary">
+            Fazer chamada de hoje ({{ hoje|date:"d/m" }})
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Você não leciona nenhuma disciplina nesta turma.</p>
+{% endif %}
+{% endblock %}

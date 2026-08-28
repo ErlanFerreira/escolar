@@ -10,7 +10,10 @@
     {% for aluno in meus_filhos %}
     <div class="list-group-item d-flex justify-content-between align-items-center">
         <span>{{ aluno.nome_completo }}</span>
-        <a href="{% url 'notas:boletim_filho' aluno.pk %}" class="btn btn-sm btn-outline-primary">Boletim</a>
+        <span>
+            <a href="{% url 'notas:boletim_filho' aluno.pk %}" class="btn btn-sm btn-outline-primary">Boletim</a>
+            <a href="{% url 'frequencia:relatorio_filho' aluno.pk %}" class="btn btn-sm btn-outline-primary">Frequência</a>
+        </span>
     </div>
     {% endfor %}
 </div>
