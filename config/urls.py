@@ -10,6 +10,7 @@ urlpatterns = [
     path("", include("apps.notas.urls")),
     path("", include("apps.frequencia.urls")),
     path("", include("apps.financeiro.urls")),
+    path("", include("apps.comunicacao.urls")),
 ]
 
 if settings.DEBUG:

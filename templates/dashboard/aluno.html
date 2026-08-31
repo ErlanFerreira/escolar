@@ -5,4 +5,5 @@
 <p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}.</p>
 <a href="{% url 'notas:meu_boletim' %}" class="btn btn-primary">Meu boletim</a>
 <a href="{% url 'frequencia:minha_frequencia' %}" class="btn btn-primary">Minha frequência</a>
+<a href="{% url 'comunicacao:lista' %}" class="btn btn-primary">Comunicados</a>
 {% endblock %}

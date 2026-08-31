@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Comunicados — Gestão Escolar{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Comunicados</h1>
+    {% if user.is_secretaria or user.is_diretor %}
+    <a href="{% url 'comunicacao:criar' %}" class="btn btn-primary">Novo comunicado</a>
+    {% endif %}
+</div>
+{% if comunicados %}
+<div class="list-group">
+    {% for comunicado in comunicados %}
+    <a href="{% url 'comunicacao:detalhe' comunicado.pk %}" class="list-group-item list-group-item-action">
+        <div class="d-flex justify-content-between align-items-center">
+            <span>
+                {% if comunicado.urgente %}<span class="badge text-bg-danger me-2">Urgente</span>{% endif %}
+                {% if comunicado.pk not in lidos_ids %}<span class="badge text-bg-primary me-2">Não lido</span>{% endif %}
+                {{ comunicado.titulo }}
+            </span>
+            <span class="text-muted small">{{ comunicado.data_publicacao|date:"d/m/Y" }}</span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">Nenhum comunicado por aqui ainda.</p>
+{% endif %}
+{% endblock %}
