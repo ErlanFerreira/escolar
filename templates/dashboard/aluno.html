@@ -1,8 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Painel do Aluno{% endblock %}
 {% block content %}
-<h1 class="h3 mb-4">Painel do Aluno</h1>
+<h1 class="h3 mb-1">Painel do Aluno</h1>
 <p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}.</p>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-muted small">Média geral</div>
+            <div class="h3 mb-0">{% if media_geral %}{{ media_geral|floatformat:1 }}{% else %}—{% endif %}</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-muted small">Frequência geral</div>
+            <div class="h3 mb-0">{% if frequencia_geral %}{{ frequencia_geral|floatformat:1 }}%{% else %}—{% endif %}</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'comunicacao:lista' %}" class="text-decoration-none text-reset">
+        <div class="card h-100 {% if comunicados_nao_lidos %}border-primary{% endif %}"><div class="card-body">
+            <div class="text-muted small">Comunicados não lidos</div>
+            <div class="h3 mb-0">{{ comunicados_nao_lidos }}</div>
+        </div></div>
+        </a>
+    </div>
+</div>
+
 <a href="{% url 'notas:meu_boletim' %}" class="btn btn-primary">Meu boletim</a>
 <a href="{% url 'frequencia:minha_frequencia' %}" class="btn btn-primary">Minha frequência</a>
 <a href="{% url 'comunicacao:lista' %}" class="btn btn-primary">Comunicados</a>

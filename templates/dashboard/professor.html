@@ -1,9 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Painel do Professor{% endblock %}
 {% block content %}
-<h1 class="h3 mb-4">Painel do Professor</h1>
+<h1 class="h3 mb-1">Painel do Professor</h1>
 <p class="text-muted">Bem-vindo(a), {{ user.get_full_name|default:user.email }}.</p>
-<a href="{% url 'comunicacao:lista' %}" class="btn btn-outline-primary mb-4">Comunicados</a>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="text-muted small">Minhas turmas</div>
+            <div class="h3 mb-0">{{ minhas_turmas|length }}</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'comunicacao:lista' %}" class="text-decoration-none text-reset">
+        <div class="card h-100 {% if comunicados_nao_lidos %}border-primary{% endif %}"><div class="card-body">
+            <div class="text-muted small">Comunicados não lidos</div>
+            <div class="h3 mb-0">{{ comunicados_nao_lidos }}</div>
+        </div></div>
+        </a>
+    </div>
+</div>
 
 <h2 class="h5 mb-3">Minhas turmas</h2>
 {% if minhas_turmas %}
