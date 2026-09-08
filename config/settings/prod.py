@@ -4,6 +4,12 @@ from .base import env
 DEBUG = False
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
+# Render (e a maioria dos PaaS) terminam TLS no proxy e repassam a requisição
+# em HTTP puro internamente — sem isso, SECURE_SSL_REDIRECT gera loop infinito
+# de redirecionamento, pois o Django acha que toda requisição chegou insegura.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True

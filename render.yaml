@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: gestao-escolar
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: "pip install -r requirements/prod.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: PYTHON_VERSION
+        value: 3.14.3
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
