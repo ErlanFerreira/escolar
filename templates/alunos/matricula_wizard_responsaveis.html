@@ -38,6 +38,8 @@
             <div class="col-md-3">
                 <label class="form-label">E-mail</label>
                 {{ form.email|add_class:"form-control" }}
+                <div class="form-text">Gera login com senha temporária.</div>
+                <div class="text-danger small">{{ form.email.errors }}</div>
             </div>
             <div class="col-md-3">
                 <label class="form-label">Profissão</label>

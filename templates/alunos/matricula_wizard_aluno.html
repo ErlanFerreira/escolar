@@ -26,6 +26,12 @@
         <label class="form-label">Sexo</label>
         {{ wizard.form.sexo|add_class:"form-select" }}
     </div>
+    <div class="col-md-6">
+        <label class="form-label">{{ wizard.form.email_acesso.label }}</label>
+        {{ wizard.form.email_acesso|add_class:"form-control" }}
+        <div class="form-text">{{ wizard.form.email_acesso.help_text }}</div>
+        <div class="text-danger small">{{ wizard.form.email_acesso.errors }}</div>
+    </div>
     <div class="col-12">
         <label class="form-label">Observações (necessidades especiais, alergias, etc.)</label>
         {{ wizard.form.observacoes|add_class:"form-control" }}

@@ -170,7 +170,8 @@ class TestMatriculaWizard:
                 "turma-turma": str(turma.pk),
             },
         )
-        assert step3.status_code == 302
+        assert step3.status_code == 200
+        assert "alunos/acessos_criados.html" in [t.name for t in step3.templates]
 
         aluno = Aluno.objects.get(nome_completo="João da Silva")
         assert aluno.matricula_numero

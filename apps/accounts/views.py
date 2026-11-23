@@ -1,9 +1,10 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views import View
 
-from .forms import EmailAuthenticationForm
+from .forms import BootstrapPasswordChangeForm, EmailAuthenticationForm
 from .models import CustomUser
 
 ROLE_DASHBOARD_URL_NAME = {
@@ -23,6 +24,19 @@ class LoginView(auth_views.LoginView):
 
 class LogoutView(auth_views.LogoutView):
     pass
+
+
+class SenhaAlterarView(auth_views.PasswordChangeView):
+    template_name = "accounts/password_change.html"
+    form_class = BootstrapPasswordChangeForm
+    success_url = reverse_lazy("accounts:post_login_redirect")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self.request.user.must_change_password:
+            self.request.user.must_change_password = False
+            self.request.user.save(update_fields=["must_change_password"])
+        return response
 
 
 class PostLoginRedirectView(LoginRequiredMixin, View):

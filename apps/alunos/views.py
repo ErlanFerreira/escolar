@@ -1,14 +1,17 @@
+from django import forms
 from django.contrib import messages
 from django.db import transaction
-from django.shortcuts import redirect
-from django.urls import reverse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.cache import add_never_cache_headers
+from django.views import View
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
 from apps.accounts.models import CustomUser
 from apps.core.mixins import RoleRequiredMixin
 
+from .acesso import criar_acesso_aluno, criar_acesso_responsavel
 from .forms import AlunoForm, MatriculaTurmaForm, ResponsavelFormSet
 from .models import Aluno, AlunoResponsavel, Matricula, Responsavel
 
@@ -48,12 +51,17 @@ class MatriculaWizardView(RoleRequiredMixin, SessionWizardView):
         turma = form_dict["turma"].cleaned_data["turma"]
         ano_letivo = turma.ano_letivo
         hoje = timezone.localdate()
+        credenciais = []
 
         with transaction.atomic():
             aluno = aluno_form.save(commit=False)
             aluno.matricula_numero = gerar_numero_matricula(ano_letivo)
             aluno.data_matricula_inicial = hoje
             aluno.save()
+
+            credencial_aluno = criar_acesso_aluno(aluno, aluno_form.cleaned_data.get("email_acesso"))
+            if credencial_aluno:
+                credenciais.append(credencial_aluno)
 
             for form in responsaveis_formset:
                 data = form.cleaned_data
@@ -78,6 +86,9 @@ class MatriculaWizardView(RoleRequiredMixin, SessionWizardView):
                     responsavel_pedagogico=data.get("responsavel_pedagogico", False),
                     reside_com_aluno=data.get("reside_com_aluno", False),
                 )
+                credencial = criar_acesso_responsavel(responsavel, data.get("email"))
+                if credencial and credencial["aviso"] != "já possui acesso":
+                    credenciais.append(credencial)
 
             Matricula.objects.create(
                 aluno=aluno,
@@ -86,8 +97,44 @@ class MatriculaWizardView(RoleRequiredMixin, SessionWizardView):
                 data_matricula=hoje,
             )
 
-        messages.success(self.request, f"Matrícula de {aluno.nome_completo} concluída com sucesso.")
-        return redirect(reverse("alunos:detalhe", args=[aluno.pk]))
+        return render_acessos(
+            self.request,
+            aluno,
+            credenciais,
+            titulo=f"Matrícula de {aluno.nome_completo} concluída",
+        )
+
+
+def render_acessos(request, aluno, credenciais, titulo):
+    """Mostra as senhas temporárias uma única vez; nada disso é persistido nem cacheado."""
+    resposta = render(
+        request, "alunos/acessos_criados.html", {"aluno": aluno, "credenciais": credenciais, "titulo": titulo}
+    )
+    add_never_cache_headers(resposta)
+    return resposta
+
+
+class CriarAcessoView(RoleRequiredMixin, View):
+    allowed_roles = (CustomUser.Role.SECRETARIA, CustomUser.Role.DIRETOR)
+
+    def post(self, request, pk, responsavel_id=None):
+        aluno = get_object_or_404(Aluno.objects.for_user(request.user), pk=pk)
+        try:
+            email = forms.EmailField().clean(request.POST.get("email", "").strip())
+        except forms.ValidationError:
+            messages.error(request, "Informe um e-mail válido.")
+            return redirect("alunos:detalhe", pk=aluno.pk)
+
+        if responsavel_id:
+            vinculo = get_object_or_404(AlunoResponsavel, aluno=aluno, responsavel_id=responsavel_id)
+            credencial = criar_acesso_responsavel(vinculo.responsavel, email)
+        else:
+            credencial = criar_acesso_aluno(aluno, email)
+
+        if credencial["senha"] is None:
+            messages.warning(request, f"{credencial['nome']}: {credencial['aviso']}.")
+            return redirect("alunos:detalhe", pk=aluno.pk)
+        return render_acessos(request, aluno, [credencial], titulo="Acesso criado")
 
 
 class AlunoListView(RoleRequiredMixin, ListView):
@@ -109,6 +156,8 @@ class AlunoDetailView(RoleRequiredMixin, DetailView):
     context_object_name = "aluno"
 
     def get_queryset(self):
-        return Aluno.objects.for_user(self.request.user).prefetch_related(
-            "matriculas__turma", "responsaveis__responsavel"
+        return (
+            Aluno.objects.for_user(self.request.user)
+            .select_related("user")
+            .prefetch_related("matriculas__turma", "responsaveis__responsavel__user")
         )

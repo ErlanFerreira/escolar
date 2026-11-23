@@ -1,4 +1,11 @@
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+
+
+class BootstrapPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for campo in self.fields.values():
+            campo.widget.attrs.update({"class": "form-control"})
 
 
 class EmailAuthenticationForm(AuthenticationForm):

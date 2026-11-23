@@ -14,6 +14,18 @@
                     <dt class="col-5">Nascimento</dt><dd class="col-7">{{ aluno.data_nascimento }}</dd>
                     <dt class="col-5">CPF</dt><dd class="col-7">{{ aluno.cpf|default:"—" }}</dd>
                     <dt class="col-5">Matriculado desde</dt><dd class="col-7">{{ aluno.data_matricula_inicial }}</dd>
+                    <dt class="col-5">Acesso ao sistema</dt>
+                    <dd class="col-7">
+                        {% if aluno.user %}
+                        <span class="badge text-bg-success">ativo</span> {{ aluno.user.email }}
+                        {% else %}
+                        <form method="post" action="{% url 'alunos:acesso_aluno' aluno.pk %}" class="d-flex gap-2">
+                            {% csrf_token %}
+                            <input type="email" name="email" class="form-control form-control-sm" placeholder="e-mail do aluno" required>
+                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Criar acesso</button>
+                        </form>
+                        {% endif %}
+                    </dd>
                 </dl>
             </div>
         </div>
@@ -43,6 +55,15 @@
                         {{ vinculo.responsavel.telefone }}
                         {% if vinculo.responsavel_financeiro %}<span class="badge text-bg-info">financeiro</span>{% endif %}
                         {% if vinculo.responsavel_pedagogico %}<span class="badge text-bg-info">comunicados</span>{% endif %}
+                        {% if vinculo.responsavel.user %}
+                        <span class="badge text-bg-success">acesso ativo</span> {{ vinculo.responsavel.user.email }}
+                        {% else %}
+                        <form method="post" action="{% url 'alunos:acesso_responsavel' aluno.pk vinculo.responsavel.pk %}" class="d-flex gap-2 mt-1 mb-2" style="max-width: 480px;">
+                            {% csrf_token %}
+                            <input type="email" name="email" value="{{ vinculo.responsavel.email }}" class="form-control form-control-sm" placeholder="e-mail do responsável" required>
+                            <button type="submit" class="btn btn-sm btn-outline-primary text-nowrap">Criar acesso</button>
+                        </form>
+                        {% endif %}
                     </li>
                     {% empty %}
                     <li class="text-muted">Nenhum responsável cadastrado.</li>

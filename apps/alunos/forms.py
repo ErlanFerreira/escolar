@@ -1,11 +1,24 @@
 from django import forms
 
+from apps.accounts.services import email_em_uso
 from apps.escola.models import Turma
 
-from .models import Aluno, AlunoResponsavel
+from .models import Aluno, AlunoResponsavel, Responsavel
 
 
 class AlunoForm(forms.ModelForm):
+    email_acesso = forms.EmailField(
+        label="E-mail de acesso do aluno",
+        required=False,
+        help_text="Opcional. Se informado, é criado um login para o aluno com senha temporária.",
+    )
+
+    def clean_email_acesso(self):
+        email = self.cleaned_data["email_acesso"]
+        if email and email_em_uso(email):
+            raise forms.ValidationError("Este e-mail já está em uso por outra conta.")
+        return email
+
     class Meta:
         model = Aluno
         fields = ["nome_completo", "data_nascimento", "cpf", "rg", "sexo", "observacoes"]
@@ -20,7 +33,11 @@ class ResponsavelForm(forms.Form):
     cpf = forms.CharField(label="CPF", max_length=14, required=False)
     telefone = forms.CharField(label="Telefone", max_length=20, required=False)
     telefone_secundario = forms.CharField(label="Telefone secundário", max_length=20, required=False)
-    email = forms.EmailField(label="E-mail", required=False)
+    email = forms.EmailField(
+        label="E-mail",
+        required=False,
+        help_text="Se informado, é criado um login para o responsável com senha temporária.",
+    )
     endereco = forms.CharField(label="Endereço", max_length=255, required=False)
     profissao = forms.CharField(label="Profissão", max_length=100, required=False)
     parentesco = forms.ChoiceField(
@@ -44,6 +61,13 @@ class ResponsavelForm(forms.Form):
                     "Preencha nome, CPF, telefone e parentesco para cada responsável informado, "
                     "ou deixe o formulário totalmente em branco."
                 )
+            email = cleaned.get("email")
+            if email and email_em_uso(email):
+                # Permitido só quando a conta já pertence a este mesmo responsável (mesmo CPF),
+                # por exemplo ao matricular um segundo filho.
+                dono = Responsavel.objects.filter(cpf=cleaned.get("cpf"), user__email__iexact=email).exists()
+                if not dono:
+                    self.add_error("email", "Este e-mail já está em uso por outra conta.")
         return cleaned
 
 
