@@ -101,6 +101,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="Gestão Escolar <no-reply@localhost>")
+
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "accounts:post_login_redirect"
 LOGOUT_REDIRECT_URL = "accounts:login"

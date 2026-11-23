@@ -1,3 +1,4 @@
 -r base.txt
 gunicorn>=23.0
 whitenoise>=6.8
+django-anymail>=15.2

@@ -29,6 +29,19 @@ pytest
 
 Cada módulo funcional vive em `apps/<nome>` (accounts, escola, professores, alunos, notas, frequencia, financeiro, comunicacao, dashboard). Veja o histórico de commits e o plano de marcos (M0–M9) para o roteiro de construção.
 
+## E-mail (recuperação de senha) em produção
+
+O plano gratuito do Render bloqueia SMTP (portas 25/465/587), então o envio usa a API HTTPS do [Brevo](https://www.brevo.com) (plano gratuito: 300 e-mails/dia).
+
+1. Crie uma conta no Brevo e, em *Senders, Domains & Dedicated IPs → Senders*, cadastre e **verifique** o e-mail remetente (o Brevo manda um link de confirmação para ele).
+2. Em *SMTP & API → API Keys*, gere uma chave de API (começa com `xkeysib-`).
+3. No Render, em *Environment* do serviço, defina:
+   - `BREVO_API_KEY`: a chave gerada.
+   - `DEFAULT_FROM_EMAIL`: `Gestão Escolar <remetente-verificado@exemplo.com>` (tem que ser o remetente verificado no passo 1).
+4. Salve; o serviço reinicia. Teste em `/senha/resetar/` com o e-mail de uma conta existente.
+
+Sem `BREVO_API_KEY`, os e-mails só aparecem no log do serviço (nada é entregue). Sem domínio próprio, e-mails de remetente Gmail/Outlook podem cair no spam; para entregabilidade melhor, use um remetente de domínio próprio autenticado no Brevo.
+
 ## Deploy (Render)
 
 O repositório já tem um `render.yaml` (Blueprint) pronto. Passos:
